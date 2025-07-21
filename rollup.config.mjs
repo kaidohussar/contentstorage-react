@@ -23,7 +23,11 @@ export default [
       peerDepsExternal(),
       resolve(),
       commonjs(),
-      typescript({ tsconfig: './tsconfig.json', declaration: true, declarationDir: 'dist/types' }),
+      typescript({
+        tsconfig: './tsconfig.json',
+        declaration: true,
+        declarationDir: 'dist/types',
+      }),
     ],
   },
   {
