@@ -26,6 +26,9 @@
   "author": "",
   "license": "ISC",
   "description": "",
+  "dependencies": {
+    "@contentstorage/core": "0.4.1"
+  },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
     "@release-it/conventional-changelog": "^10.0.1",
