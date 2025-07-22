@@ -9,8 +9,8 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "eslint src/*",
+    "lint:fix": "eslint src/* --fix",
     "format": "prettier --write .",
     "build": "rollup -c",
     "release": "node -r dotenv/config ./node_modules/.bin/release-it"
