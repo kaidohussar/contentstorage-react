@@ -31,6 +31,7 @@ export default [
         declarationDir: 'dist/types',
       }),
     ],
+    external: ['react', 'react-dom'],
   },
   {
     input: 'dist/types/index.d.ts',
