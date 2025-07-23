@@ -9,5 +9,5 @@ export function Text<Path extends keyof ContentStructure>({
     ? keyof Vars
     : Record<string, unknown>;
 }) {
-  return getText(contentId, variables);
+  return getText(contentId, variables).text || contentId;
 }
