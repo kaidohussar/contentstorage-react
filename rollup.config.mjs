@@ -3,8 +3,8 @@ import typescript from '@rollup/plugin-typescript';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
+import nodePolyfills from 'rollup-plugin-node-polyfills';
 import dts from 'rollup-plugin-dts';
-import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 export default [
   {
@@ -23,6 +23,7 @@ export default [
     ],
     plugins: [
       peerDepsExternal(),
+      nodePolyfills(),
       resolve(),
       json(),
       commonjs(),
@@ -30,18 +31,6 @@ export default [
         tsconfig: './tsconfig.json',
         declaration: true,
         declarationDir: 'dist/types',
-      }),
-      nodePolyfills({
-        // To exclude specific polyfills, add them to this list.
-        exclude: ['fs'],
-        // Whether to polyfill `global`.
-        globals: {
-          Buffer: true,
-          global: true,
-          process: true,
-        },
-        // Whether to polyfill `node:` protocol imports.
-        protocolImports: true,
       }),
     ],
     external: ['react', 'react-dom'],
