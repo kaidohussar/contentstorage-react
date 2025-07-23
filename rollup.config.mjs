@@ -24,7 +24,7 @@ export default [
     plugins: [
       peerDepsExternal(),
       nodePolyfills(),
-      resolve(),
+      resolve({ browser: true }),
       json(),
       commonjs(),
       typescript({
