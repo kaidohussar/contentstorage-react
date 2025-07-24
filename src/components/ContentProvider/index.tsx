@@ -11,9 +11,11 @@ import {
   LanguageCode,
 } from '@contentstorage/core';
 
+type FetchStatus = 'idle' | 'loading' | 'failed';
+
 interface ContentContextType {
   languageCodes: LanguageCode[];
-  isLoading: boolean;
+  status: FetchStatus;
   currentLanguageCode: LanguageCode;
 }
 
@@ -34,7 +36,7 @@ export const ContentProvider = ({
   loadingFallback,
   contentKey,
 }: ContentProviderProps) => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [status, setStatus] = useState<FetchStatus>('loading');
   const [currentLanguageCode, setCurrentLanguageCode] = useState<LanguageCode>(
     languageCodes?.[0]
   );
@@ -45,30 +47,33 @@ export const ContentProvider = ({
   });
 
   const setLanguage = async (lang: LanguageCode) => {
-    setIsLoading(true);
+    setStatus('loading');
     try {
       await fetchContent(lang);
+      setStatus('idle');
     } catch (error) {
+      setStatus('failed');
       if (onError) {
         onError(error);
       }
-    } finally {
-      setIsLoading(false);
     }
 
     setCurrentLanguageCode(lang);
   };
 
   useEffect(() => {
-    if (languageCodes.length === 0) return;
+    if (languageCodes.length === 0) {
+      setStatus('failed');
+      return;
+    }
     setLanguage(languageCodes[0]);
   }, []);
 
   return (
     <ContentContext.Provider
-      value={{ languageCodes, isLoading, currentLanguageCode }}
+      value={{ languageCodes, status, currentLanguageCode }}
     >
-      {loadingFallback && isLoading ? loadingFallback : children}
+      {loadingFallback && status === 'loading' ? loadingFallback : children}
     </ContentContext.Provider>
   );
 };
