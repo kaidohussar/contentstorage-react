@@ -17,6 +17,7 @@ interface ContentContextType {
   languageCodes: LanguageCode[];
   status: FetchStatus;
   currentLanguageCode: LanguageCode;
+  setLanguage: (lang: LanguageCode) => Promise<void>;
 }
 
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
@@ -71,7 +72,7 @@ export const ContentProvider = ({
 
   return (
     <ContentContext.Provider
-      value={{ languageCodes, status, currentLanguageCode }}
+      value={{ languageCodes, status, currentLanguageCode, setLanguage }}
     >
       {loadingFallback && status === 'loading' ? loadingFallback : children}
     </ContentContext.Provider>
