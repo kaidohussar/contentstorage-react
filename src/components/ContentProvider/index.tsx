@@ -31,7 +31,7 @@ type ContentProviderProps<T extends readonly LanguageCode[]> = {
   loadingFallback?: React.ReactNode;
 } & (
   | {
-      contentMode?: 'headless';
+      contentMode: 'headless';
       contentKey: string;
       staticContent?: never;
     }
@@ -53,10 +53,11 @@ export const ContentProvider = <const T extends readonly LanguageCode[]>(
   );
 
   useEffect(() => {
+    if (props.contentMode !== 'headless') return;
+
     initContentStorage({
       languageCodes: [...languageCodes],
-      contentKey:
-        props.contentMode === 'headless' ? props.contentKey : undefined,
+      contentKey: props.contentKey,
     });
   }, [languageCodes, props.contentMode, props.contentKey]);
 
