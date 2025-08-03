@@ -33,11 +33,9 @@ type ContentProviderProps<T extends readonly LanguageCode[]> = {
   | {
       contentMode: 'headless';
       contentKey: string;
-      staticContent?: never;
     }
   | {
       contentMode: 'static';
-      contentKey?: never;
       staticContent: { [K in T[number]]: object };
     }
 );
@@ -59,7 +57,7 @@ export const ContentProvider = <const T extends readonly LanguageCode[]>(
       languageCodes: [...languageCodes],
       contentKey: props.contentKey,
     });
-  }, [languageCodes, props.contentMode, props.contentKey]);
+  }, [languageCodes, props.contentMode]);
 
   const setLanguage = useCallback(
     async (lang: LanguageCode) => {
@@ -93,7 +91,7 @@ export const ContentProvider = <const T extends readonly LanguageCode[]>(
       }
       setCurrentLanguageCode(lang);
     },
-    [props.contentMode, onError, props.staticContent]
+    [props.contentMode, onError]
   );
 
   useEffect(() => {
