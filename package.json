@@ -13,7 +13,10 @@
     "lint:fix": "eslint src/* --fix",
     "format": "prettier --write .",
     "build": "rollup -c",
-    "release": "node -r dotenv/config ./node_modules/.bin/release-it $@"
+    "release": "node -r dotenv/config ./node_modules/.bin/release-it $@",
+    "release:patch": "npm run release patch",
+    "release:minor": "npm run release minor",
+    "release:major": "npm run release major"
   },
   "peerDependencies": {
     "react": "^19.1.0",
