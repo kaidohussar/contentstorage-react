@@ -1,5 +1,6 @@
 import React, {
   createContext,
+  useCallback,
   useContext,
   ReactNode,
   useState,
@@ -9,12 +10,13 @@ import {
   fetchContent,
   initContentStorage,
   LanguageCode,
+  setContentLanguage,
 } from '@contentstorage/core';
 
 type FetchStatus = 'idle' | 'loading' | 'failed';
 
 interface ContentContextType {
-  languageCodes: LanguageCode[];
+  languageCodes: readonly LanguageCode[];
   status: FetchStatus;
   currentLanguageCode: LanguageCode;
   setLanguage: (lang: LanguageCode) => Promise<void>;
@@ -22,57 +24,99 @@ interface ContentContextType {
 
 const ContentContext = createContext<ContentContextType | undefined>(undefined);
 
-interface ContentProviderProps {
+type ContentProviderProps<T extends readonly LanguageCode[]> = {
   children: ReactNode;
-  languageCodes: LanguageCode[];
+  languageCodes: T;
   onError?: (error: unknown) => void;
   loadingFallback?: React.ReactNode;
-  contentKey: string;
-}
+} & (
+  | {
+      contentMode?: 'headless';
+      contentKey: string;
+      staticContent?: never;
+    }
+  | {
+      contentMode: 'static';
+      contentKey?: never;
+      staticContent: { [K in T[number]]: object };
+    }
+);
 
-export const ContentProvider = ({
-  children,
-  languageCodes,
-  onError,
-  loadingFallback,
-  contentKey,
-}: ContentProviderProps) => {
+export const ContentProvider = <const T extends readonly LanguageCode[]>(
+  props: ContentProviderProps<T>
+) => {
+  const { children, languageCodes, onError, loadingFallback } = props;
+
   const [status, setStatus] = useState<FetchStatus>('loading');
   const [currentLanguageCode, setCurrentLanguageCode] = useState<LanguageCode>(
     languageCodes?.[0]
   );
 
-  initContentStorage({
-    languageCodes,
-    contentKey,
-  });
+  useEffect(() => {
+    initContentStorage({
+      languageCodes: [...languageCodes],
+      contentKey:
+        props.contentMode === 'headless' ? props.contentKey : undefined,
+    });
+  }, [languageCodes, props.contentMode, props.contentKey]);
 
-  const setLanguage = async (lang: LanguageCode) => {
-    setStatus('loading');
-    try {
-      await fetchContent(lang);
-      setStatus('idle');
-    } catch (error) {
-      setStatus('failed');
-      if (onError) {
-        onError(error);
+  const setLanguage = useCallback(
+    async (lang: LanguageCode) => {
+      if (props.contentMode === 'headless') {
+        setStatus('loading');
+        try {
+          await fetchContent(lang);
+          setStatus('idle');
+        } catch (error) {
+          setStatus('failed');
+          if (onError) {
+            onError(error);
+          }
+        }
+      } else {
+        // contentMode is 'static'
+        if (props.staticContent && props.staticContent[lang]) {
+          setContentLanguage({
+            languageCode: lang,
+            contentJson: props.staticContent[lang],
+          });
+          setStatus('idle');
+        } else {
+          setStatus('failed');
+          if (onError) {
+            onError(
+              new Error(`Static content not found for language: ${lang}`)
+            );
+          }
+        }
       }
-    }
-
-    setCurrentLanguageCode(lang);
-  };
+      setCurrentLanguageCode(lang);
+    },
+    [props.contentMode, onError, props.staticContent]
+  );
 
   useEffect(() => {
     if (languageCodes.length === 0) {
       setStatus('failed');
       return;
     }
-    setLanguage(languageCodes[0]);
-  }, []);
+
+    if (props.contentMode === 'static') {
+      setStatus('idle');
+      setCurrentLanguageCode(languageCodes[0]);
+    } else {
+      setLanguage(languageCodes[0]);
+    }
+  }, [languageCodes, props.contentMode, setLanguage]);
 
   return (
     <ContentContext.Provider
-      value={{ languageCodes, status, currentLanguageCode, setLanguage }}
+      value={{
+        languageCodes,
+        status,
+        currentLanguageCode,
+        setLanguage,
+      }}
     >
       {loadingFallback && status === 'loading' ? loadingFallback : children}
     </ContentContext.Provider>
