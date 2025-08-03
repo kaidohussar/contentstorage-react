@@ -51,12 +51,21 @@ export const ContentProvider = <const T extends readonly LanguageCode[]>(
   );
 
   useEffect(() => {
-    if (props.contentMode !== 'headless') return;
-
-    initContentStorage({
-      languageCodes: [...languageCodes],
-      contentKey: props.contentKey,
-    });
+    if (props.contentMode === 'headless') {
+      initContentStorage({
+        languageCodes: [...languageCodes],
+        contentKey: props.contentKey,
+      });
+    } else if (
+      props.contentMode === 'static' &&
+      props.staticContent &&
+      props.staticContent[languageCodes[0]]
+    ) {
+      setContentLanguage({
+        languageCode: languageCodes[0],
+        contentJson: props.staticContent[languageCodes[0]],
+      });
+    }
   }, [languageCodes, props.contentMode]);
 
   const setLanguage = useCallback(
