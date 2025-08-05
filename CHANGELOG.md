@@ -1,5 +1,7 @@
 # Changelog
 
+# [1.0.0](https://github.com/kaidohussar/contentstorage-react/compare/v0.3.1...v1.0.0) (2025-08-05)
+
 ## [0.3.1](https://github.com/kaidohussar/contentstorage-react/compare/v0.3.0...v0.3.1) (2025-08-03)
 
 # [0.3.0](https://github.com/kaidohussar/contentstorage-react/compare/v0.2.15...v0.3.0) (2025-08-03)
