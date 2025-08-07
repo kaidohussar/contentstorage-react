@@ -30,7 +30,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@contentstorage/core": "1.0.1"
+    "@contentstorage/core": "1.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
