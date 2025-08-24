@@ -11,5 +11,5 @@ export function Variation<Path extends keyof ContentStructure>({
     : string;
   variables?: Record<string, unknown>;
 }) {
-  return getVariation(contentId, variationId, variables) || contentId;
+  return getVariation(contentId, variationId, variables).text || contentId;
 }
