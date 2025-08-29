@@ -29,6 +29,7 @@ type ContentProviderProps<T extends readonly LanguageCode[]> = {
   languageCodes: T;
   onError?: (error: unknown) => void;
   loadingFallback?: React.ReactNode;
+  withPendingChanges?: boolean;
 } & (
   | {
       contentMode: 'headless';
@@ -73,7 +74,10 @@ export const ContentProvider = <const T extends readonly LanguageCode[]>(
       if (props.contentMode === 'headless') {
         setStatus('loading');
         try {
-          await fetchContent(lang);
+          await fetchContent(lang, {
+            withPendingChanges: props.withPendingChanges,
+            contentKey: props.contentKey,
+          });
           setStatus('idle');
         } catch (error) {
           setStatus('failed');
@@ -126,7 +130,7 @@ export const ContentProvider = <const T extends readonly LanguageCode[]>(
         setLanguage,
       }}
     >
-      {loadingFallback && status === 'loading' ? loadingFallback : children}
+      {status === 'loading' ? loadingFallback || null : children}
     </ContentContext.Provider>
   );
 };
