@@ -326,11 +326,7 @@ Content is organized in a hierarchical key-value structure and accessed using do
 {
   "home": {
     "title": "Welcome",
-    "greeting": "Hello, {{name}}!",
-    "hero": {
-      "url": "https://example.com/image.jpg",
-      "altText": "Hero image"
-    }
+    "greeting": "Hello, {name}!"
   }
 }
 ```
@@ -362,23 +358,6 @@ Then run:
 ```bash
 npm run content:sync
 ```
-
-## Live Editor Mode
-
-Enable automatic content reloading during development by including pending changes:
-
-```tsx
-<ContentProvider
-  contentMode="headless"
-  contentKey="YOUR_CONTENT_KEY"
-  languageCodes={['en', 'et']}
-  withPendingChanges={process.env.NODE_ENV === 'development'}
->
-  {children}
-</ContentProvider>
-```
-
-This allows content editors to see changes in real-time without rebuilding your app.
 
 ## Integration with @contentstorage/core
 
