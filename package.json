@@ -39,7 +39,7 @@
   "license": "MIT",
   "description": "React hooks and components for @contentstorage - A key-value based CMS library with TypeScript support",
   "dependencies": {
-    "@contentstorage/core": "^1.2.0"
+    "@contentstorage/core": "^1.2.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
